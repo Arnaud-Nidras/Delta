@@ -71,11 +71,7 @@ class PipeSocket :
 
         print("[INFO] Connecting to Camera Socket ...")
         os.write(self.ctlPipe, "Open".encode("UTF-8"))
-        while 1 :
-
-            frame = self.getFrame()
-            cv2.imshow("Frame", frame)
-            cv2.waitKey(1)
+        
 
             
 
