@@ -3,8 +3,6 @@ import numpy as np
 import os
 import time
 import fcntl
-import CameraSocket
-import subprocess
 import atexit
 
 class PipeSocket :
@@ -61,24 +59,18 @@ class PipeSocket :
         os.system("pkill -f CameraSocket.py")
 
 
-    def __init__(self, sshIP, sshUser, sshPassword) :
+    def __init__(self, path) :
 
         atexit.register(self.exit_handler)
 
-        print("[INFO] Connecting to camera ...")
-
-        #cs = CameraSocket.CameraSocket(sshIP, sshUser, sshPassword)
-        #subprocess.run(["python", "CameraSocket.py", sshIP, sshUser, sshPassword])
-        #os.system("python CameraSocket.py " + sshIP + " " + sshUser + " " + sshPassword)
         cv2.namedWindow("Frame", cv2.WINDOW_AUTOSIZE)
-        time.sleep(5)
-        self.ctlPipe = os.open("ctlPipe", os.O_WRONLY | os.O_NONBLOCK)
-        self.imgPipe = os.open("imgPipe", os.O_RDONLY | os.O_NONBLOCK)
+        time.sleep(20)
+        self.ctlPipe = os.open(path + "/CameraConnector/ctlPipe", os.O_WRONLY | os.O_NONBLOCK)
+        self.imgPipe = os.open(path + "/CameraConnector/imgPipe", os.O_RDONLY | os.O_NONBLOCK)
         fcntl.fcntl(self.imgPipe, 1031, 1000000)
 
         print("[INFO] Connecting to Camera Socket ...")
         os.write(self.ctlPipe, "Open".encode("UTF-8"))
-
         while 1 :
 
             frame = self.getFrame()
